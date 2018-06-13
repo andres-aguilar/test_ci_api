@@ -7,7 +7,7 @@ class Todos_model extends CI_Model
 {
     public function load_all_tasks() 
     {
-        $query = $this->db->get('todo');
+        $query = $this->db->query('SELECT * FROM todo WHERE todo_done=0');
 
         return $query->result_array();
     }
