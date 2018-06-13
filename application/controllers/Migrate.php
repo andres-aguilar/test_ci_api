@@ -21,6 +21,7 @@ class Migrate extends CI_Controller
 
         echo "Migration....";
         if (!$this->migration->current()) {
+            echo "ERROR: ".PHP_EOL;
             show_error($this->migration->error_string());
         } else {
             echo "DONE".PHP_EOL;
