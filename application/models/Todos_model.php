@@ -12,7 +12,9 @@ class Todos_model extends CI_Model
         return $query->result_array();
     }
 
-    public function register_task($task) {}
+    public function register_task($task) {
+        $this->db->query("INSERT INTO todo VALUES(?, ?, ?, NOW())");
 
-    public function update_task($task) {}
+        return $this->db->affected_rows();
+    }
 }
