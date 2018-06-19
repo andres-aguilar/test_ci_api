@@ -43,6 +43,11 @@ class Todos extends CI_Controller
             $title   = $this->input->post("title", true);
             $comment = $this->input->post("comment", true);
 
+            $task = array('id'=>$id, 'title'=>$title, 'comment'=>$comment);
+
+            $this->load->model("Todos_model");
+            $this->Todos_model->register_task($task);
+
             // Register
             $this->message($this->messages['ok']);
         } else {
