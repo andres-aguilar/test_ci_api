@@ -9,6 +9,24 @@ function uuidv4() {
   });
 }
 
+function showAlert(message, error=false) {
+  let $message     = document.querySelector(".message")
+  let $message_text = document.querySelector(".message-text")
+  
+  $message_text.innerHTML = message
+  if (error) {
+    $message.classList.add("error")
+  } else {
+    $message.classList.add("success")
+  }
+
+  $message.classList.remove("hide")
+
+  setTimeout(function(){
+    $message.classList.add("hide")
+  }, 2000)
+}
+
 /**
  * Vue definitions
  */
@@ -73,14 +91,20 @@ new Vue({
 
       this.deleteTask(task); // Delete task from list
     },
-    registerTask: function(task) {
+    registerTask: function(task) {console.log
       console.log("Registrando...")
       this.$http.post('todos/registerTask', {id: task.id, title: task.title, comment: task.comment})
         .then(response => {
-          console.log(response)
-
+          if (response.body.message == "OK") {
+            showAlert("Tarea agregada")
+          } else {
+            showAlert("No fue posible registrar la tarea", true)
+          }
         })
-        .catch(console.log)
+        .catch((response) => {
+          console.log(response)
+          showAlert("No fue posible registrar la tarea", true)
+        })
     }
   }
 })

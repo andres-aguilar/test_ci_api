@@ -29,6 +29,19 @@ h1 {font-size: 3em}
 .taskDone {text-decoration: line-through}
 .form-group { margin: 0.5em 0 }
 .title {font-weight: bold}
+.error { background-color: var(--red) }
+.success { background-color: var(--dark-green) }
+.hide { display: none }
+
+.message {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: var(--white);
+  font-weight: bold;
+  padding: 0.5em
+}
 
 .table-head {
   margin-top: 0.5em;
