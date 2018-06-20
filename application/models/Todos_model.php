@@ -17,4 +17,16 @@ class Todos_model extends CI_Model
 
         return $this->db->affected_rows();
     }
+
+    public function update_task($task) {
+        $this->db->query("UPDATE todo SET todo_title=?, todo_comment=?, todo_done=? WHERE todo_id=?;", 
+                         array(
+                             'todo_title' => $task['title'],
+                             'todo_comment' => $task['comment'],
+                             'todo_dome' => $task['status'],
+                             'todo_id' => $task['id']
+                         ));
+
+        return $this->db->affected_rows();
+    }
 }

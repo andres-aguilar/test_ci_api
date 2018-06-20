@@ -61,8 +61,17 @@ new Vue({
     addTask: function(e) {
       e.preventDefault()
       if (this.tasks.title != undefined && this.tasks.title != '') {
+        let id
+        let update = false
         // If not task id, generate a new ID
-        let id = (this.tasks.id == undefined || this.tasks.id == '') ? uuidv4() : this.tasks.id
+        if (this.tasks.id == undefined || this.tasks.id == '') {
+          // Is a new task
+          id =  uuidv4()
+        } else {
+          id = this.tasks.id
+          update = true
+        }
+        
 
         let task = {
           id,
@@ -76,7 +85,13 @@ new Vue({
         this.tasks.comment = ''
         this.tasks.id = ''
 
-        this.registerTask(task)
+        if (update) {
+          // Update task
+          this.registerTask(task, false)
+        } else {
+          // Register new task
+          this.registerTask(task)
+        }
         this.tasks.push(task)
       }
     },
@@ -91,9 +106,17 @@ new Vue({
 
       this.deleteTask(task); // Delete task from list
     },
-    registerTask: function(task) {console.log
-      console.log("Registrando...")
-      this.$http.post('todos/registerTask', {id: task.id, title: task.title, comment: task.comment})
+    registerTask: function(task, register=true) {
+      let url
+      if (register) {
+        console.log("Registrando...")
+        url = 'todos/registerTask'
+      } else {
+        console.log("Actualizando...")
+        url = 'todos/updateTask'
+      }
+      
+      this.$http.post(url, {id: task.id, title: task.title, comment: task.comment, status: task.done})
         .then(response => {
           if (response.body.message == "OK") {
             showAlert("Tarea agregada")

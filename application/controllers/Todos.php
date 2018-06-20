@@ -69,8 +69,18 @@ class Todos extends CI_Controller
             $comment = $this->input->post("comment", true);
             $status  = $this->input->post("status", true);
 
-            // Update
-
+            if ($id != null && $title != null && $comment != null && $status != null) {
+                $status = ($status) ? 0 : 1;
+                $task = array('id'=>$id, 'title'=>$title, 'comment'=>$comment, 'status'=>$status);
+                
+                $this->load->model("Todos_model");
+                // Update
+                if ($this->Todos_model->update_task($task) == 1) {
+                    $this->JSONresponse($this->messages['ok']);
+                } else {
+                    $this->JSONresponse($this->messages['error']);    
+                }
+            }
             $this->JSONresponse($this->messages['ok']);
         } else {
             $this->JSONresponse($this->messages['error']);
