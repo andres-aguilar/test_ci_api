@@ -1,4 +1,17 @@
 
+/**
+ * Functions
+ */
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+/**
+ * Vue definitions
+ */
 Vue.http.options.emulateJSON = true // web server can't handle requests encoded as application/json
 new Vue({
   el: '#taskApp',
@@ -31,21 +44,22 @@ new Vue({
       e.preventDefault()
       if (this.tasks.title != undefined && this.tasks.title != '') {
         // If not task id, generate a new ID
-        let id = (this.tasks.id == undefined || this.tasks.id == '') ? Math.random().toString(36).substring(2) : this.tasks.id
+        let id = (this.tasks.id == undefined || this.tasks.id == '') ? uuidv4() : this.tasks.id
 
-        this.tasks.push({
+        let task = {
           id,
           title: this.tasks.title,
           comment: this.tasks.comment,
           done: false
-        })
-
+        }
+        
         // Reset form fields
         this.tasks.title = ''
         this.tasks.comment = ''
         this.tasks.id = ''
 
-        this.registerTask(this.tasks[this.tasks.length -1])
+        this.registerTask(task)
+        this.tasks.push(task)
       }
     },
     updateTask: function(task) {
@@ -62,7 +76,10 @@ new Vue({
     registerTask: function(task) {
       console.log("Registrando...")
       this.$http.post('todos/registerTask', {id: task.id, title: task.title, comment: task.comment})
-        .then(response => console.log(response))
+        .then(response => {
+          console.log(response)
+
+        })
         .catch(console.log)
     }
   }

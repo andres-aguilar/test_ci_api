@@ -11,7 +11,7 @@ class Todos extends CI_Controller
     	'ok' => array('message' => 'OK')
 	);
 
-    private function message($msg)
+    private function JSONresponse($msg)
     {
         /* Return a JSON message
 
@@ -33,7 +33,7 @@ class Todos extends CI_Controller
         $this->load->model("Todos_model");
         $tasks = $this->Todos_model->load_all_tasks();
 
-        $this->message($tasks);
+        $this->JSONresponse($tasks);
     }
 
     public function registerTask()
@@ -43,15 +43,21 @@ class Todos extends CI_Controller
             $title   = $this->input->post("title", true);
             $comment = $this->input->post("comment", true);
 
-            $task = array('id'=>$id, 'title'=>$title, 'comment'=>$comment);
-
-            $this->load->model("Todos_model");
-            $this->Todos_model->register_task($task);
-
-            // Register
-            $this->message($this->messages['ok']);
+            if ($id != null && $title != null && $comment != null) {
+                $task = array('id'=>$id, 'title'=>$title, 'comment'=>$comment);
+    
+                // Register
+                $this->load->model("Todos_model");
+                if ($this->Todos_model->register_task($task) == 1) {
+                    $this->JSONresponse($this->messages['ok']);
+                } else {
+                    $this->JSONresponse($this->messages['error']);    
+                }
+            } else {
+                $this->JSONresponse($this->messages['error']); 
+            }
         } else {
-            $this->message($this->massages['error']);
+            $this->JSONresponse($this->messages['error']);
         }
     }
 
@@ -65,9 +71,9 @@ class Todos extends CI_Controller
 
             // Update
 
-            $this->message($this->messages['ok']);
+            $this->JSONresponse($this->messages['ok']);
         } else {
-            $this->message($this->massages['error']);
+            $this->JSONresponse($this->messages['error']);
         }
     }
 }
