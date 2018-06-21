@@ -70,7 +70,7 @@ class Todos extends CI_Controller
             $status  = $this->input->post("status", true);
 
             if ($id != null && $title != null && $comment != null && $status != null) {
-                $status = ($status) ? 0 : 1;
+                $status = ($status == "true") ? 1 : 0;
                 $task = array('id'=>$id, 'title'=>$title, 'comment'=>$comment, 'status'=>$status);
                 
                 $this->load->model("Todos_model");

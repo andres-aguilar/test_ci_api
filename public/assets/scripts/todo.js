@@ -38,7 +38,6 @@ new Vue({
     tasks: []
   },
   beforeMount() {
-    console.log("Cargando datos desde el servidor")
     this.$http.get('todos/getAllTasks')
       .then(response => {
         let data = response.body
@@ -55,8 +54,14 @@ new Vue({
       .catch(console.log)
   },
   methods: {
-    deleteTask: function(task) {
+    deleteTask: function(task, update=false) {
       this.tasks.splice(this.tasks.indexOf(task), 1)
+
+      if (!update) {
+        task.done = true
+        console.log(`${task.title} done!`)
+        this.registerTask(task, false)
+      }
     },
     addTask: function(e) {
       e.preventDefault()
@@ -104,22 +109,20 @@ new Vue({
       this.tasks.comment = current_task.comment
       this.tasks.id = current_task.id
 
-      this.deleteTask(task); // Delete task from list
+
+      this.deleteTask(task, true); // Delete task from list
     },
     registerTask: function(task, register=true) {
-      let url
-      if (register) {
-        console.log("Registrando...")
-        url = 'todos/registerTask'
-      } else {
-        console.log("Actualizando...")
-        url = 'todos/updateTask'
-      }
-      
+      let url = (register) ? 'todos/registerTask' : 'todos/updateTask'
+
       this.$http.post(url, {id: task.id, title: task.title, comment: task.comment, status: task.done})
         .then(response => {
           if (response.body.message == "OK") {
-            showAlert("Tarea agregada")
+            if (register) {
+              showAlert("Tarea agregada")
+            } else {
+              showAlert("Tarea actualizada")
+            }
           } else {
             showAlert("No fue posible registrar la tarea", true)
           }
